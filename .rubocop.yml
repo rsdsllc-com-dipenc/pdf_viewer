@@ -1,0 +1,52 @@
+require:
+  - rubocop-performance
+  - rubocop-rails
+  - rubocop-rspec
+  - rubocop-md
+
+AllCops:
+  NewCops: enable
+  Exclude:
+    - "vendor/**/*"
+    - "test/fixtures/**/*"
+    - "db/**/*"
+    - "bin/**/*"
+    - "log/**/*"
+    - "tmp/**/*"
+    - "config/environments/*"
+    - "node_modules/**/*"
+    - "Gemfile.lock"
+    # - "app/views/**/*"
+
+Layout/LineLength:
+  Max: 200
+Metrics/MethodLength:
+  # Max: 20
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
+
+Metrics/AbcSize:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Metrics/ClassLength:
+  Enabled: false
+
+Style/SymbolArray:
+  EnforcedStyle: brackets
