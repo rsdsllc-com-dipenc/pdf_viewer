@@ -1,0 +1,16 @@
+<h1 class="text-center my-4">Search PDF</h1>
+<div class="container">
+  <%= form_with url: '/result', local: true, multipart: true do |form| %>
+    <div class="mb-3">
+      <%= form.label :search_text, "Text to search", class: 'form-label' %>
+      <%= form.text_field :search_text, class: 'form-control', required: true, placeholder: 'Enter text to search' %>
+    </div>
+    <div class="mb-3">
+      <%= form.label :pdf_file, "Upload PDF", class: 'form-label' %>
+      <%= form.file_field :pdf_file, class: 'form-control', accept: 'application/pdf', required: true %>
+    </div>
+    <div class="mb-3">
+      <%= form.submit "Search", class: 'btn btn-primary w-100' %>
+    </div>
+  <% end %>
+</div>
