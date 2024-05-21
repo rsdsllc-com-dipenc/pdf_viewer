@@ -7,34 +7,20 @@ let pdfViewer;
 let pdfDocument;
 
 async function initializePDFViewer() {
-  // The workerSrc property shall be specified.
+  // Configure worker and other settings
   pdfjsLib.GlobalWorkerOptions.workerSrc = "../../node_modules/pdfjs-dist/build/pdf.worker.mjs";
-
-  // Some PDFs need external cmaps.
   const CMAP_URL = "../../node_modules/pdfjs-dist/cmaps/";
   const CMAP_PACKED = true;
   const DEFAULT_URL = "insurance.pdf";
   const ENABLE_XFA = true;
-  const SEARCH_FOR = "law";
   const SANDBOX_BUNDLE_SRC = new URL("../../node_modules/pdfjs-dist/build/pdf.sandbox.mjs", window.location);
 
-  // Enable hyperlinks within PDF files.
-  const pdfLinkService = new pdfjsViewer.PDFLinkService({
-    eventBus,
-  });
+  // Initialize services
+  const pdfLinkService = new pdfjsViewer.PDFLinkService({ eventBus });
+  const pdfFindController = new pdfjsViewer.PDFFindController({ eventBus, linkService: pdfLinkService });
+  const pdfScriptingManager = new pdfjsViewer.PDFScriptingManager({ eventBus, sandboxBundleSrc: SANDBOX_BUNDLE_SRC });
 
-  // Enable find controller.
-  const pdfFindController = new pdfjsViewer.PDFFindController({
-    eventBus,
-    linkService: pdfLinkService,
-  });
-
-  // Enable scripting support.
-  const pdfScriptingManager = new pdfjsViewer.PDFScriptingManager({
-    eventBus,
-    sandboxBundleSrc: SANDBOX_BUNDLE_SRC,
-  });
-
+  // Initialize PDF viewer
   pdfViewer = new pdfjsViewer.PDFViewer({
     container,
     eventBus,
@@ -46,7 +32,7 @@ async function initializePDFViewer() {
   pdfLinkService.setViewer(pdfViewer);
   pdfScriptingManager.setViewer(pdfViewer);
 
-  // Loading document
+  // Load document
   const loadingTask = pdfjsLib.getDocument({
     url: DEFAULT_URL,
     cMapUrl: CMAP_URL,
@@ -55,59 +41,40 @@ async function initializePDFViewer() {
   });
 
   pdfDocument = await loadingTask.promise;
-  // Document loaded, specifying document for the viewer and the (optional) linkService.
   pdfViewer.setDocument(pdfDocument);
   pdfLinkService.setDocument(pdfDocument, null);
 }
 
-await initializePDFViewer();
-
-eventBus.on("pagesinit", function () {
-  console.log(`pdfViewer.currentScaleValue: ${pdfViewer.currentScaleValue}`);
+eventBus.on("pagesinit", () => {
+  // Optional: Adjust viewer settings or perform initial search
   // pdfViewer.currentScaleValue = "page-width";
-
-  // We can try searching for things.
-  // if (SEARCH_FOR) {
-    // eventBus.dispatch("find", { type: "", query: SEARCH_FOR, caseSensitive: false, highlightAll: true, phraseSearch: true });
-  // }
+  // eventBus.dispatch("find", { type: "", query: "law", caseSensitive: false, highlightAll: true, phraseSearch: true });
 });
 
-// Function to search for the word "proof" and log occurrences
-const searchAndLogOccurrences = async (doc) => {
-  // To get metadata: https://github.com/mozilla/pdf.js/blob/master/examples/node/getinfo.mjs
-
+async function searchAndLogOccurrences(doc) {
+  const SEARCH_FOR = "law";
   const numPages = doc.numPages;
   let totalOccurrences = 0;
 
   for (let i = 1; i <= numPages; i++) {
     console.log(`# Scanning Page ${i}`);
-    const page = await doc.getPage(i); // PDFPageProxy Object
-
-    // pageTextContent is an object that has items and styles properties.
-    const pageTextContent = await page.getTextContent();
+    const page = await doc.getPage(i);
+    const pageTextContent = await page.getTextContent(); // pageTextContent is an object that has items and styles properties.
 
     // pageTextContent.items is an array of objects in the form: {str: "", dir: "ltr", width: 91, height: 8, transform: Array(6) of Numbers, fontName: "", hasEOL: false}
+
+    let occurrences = 0;
     pageTextContent.items.forEach((item) => {
-      if (item.str.includes("law")) {
-        console.log("Found law");
-        console.dir(item);
+      if (item.str.includes(SEARCH_FOR)) {
+        console.log("Found law", item);
+        occurrences++;
       }
     });
 
-    // const strings = pageTextContent.items.map((item) => item.str);
-    // const occurrences = strings.filter((str) => str.includes(SEARCH_FOR)).length;
-
     if (occurrences > 0) {
-      strings.forEach((str) => {
-        if (str.includes(SEARCH_FOR)) {
-          console.log(str);
-        }
-      });
       console.log(`Occurrences on page ${i}: ${occurrences}`);
-
-      // Highlight occurrences on the page
       const viewport = page.getViewport({ scale: 1.0 });
-      const annotations = content.items
+      const annotations = pageTextContent.items
         .filter((item) => item.str.includes(SEARCH_FOR))
         .map((item) => ({
           type: "highlight",
@@ -115,22 +82,8 @@ const searchAndLogOccurrences = async (doc) => {
           page: i,
         }));
 
-      console.dir("++++++++++++++++++++++++++");
-      console.dir(annotations);
-      console.dir("++++++++++++++++++++++++++");
-
-      // Add annotations to the viewer
-      // annotations.forEach(annot => {
-      //   const div = document.createElement('div');
-      //   div.style.position = 'absolute';
-      //   div.style.backgroundColor = 'yellow';
-      //   div.style.opacity = '0.5';
-      //   div.style.left = `${annot.rect[0]}px`;
-      //   div.style.top = `${viewport.height - annot.rect[1]}px`;
-      //   div.style.width = `${annot.rect[2]}px`;
-      //   div.style.height = `${annot.rect[3]}px`;
-      //   container.appendChild(div);
-      // });
+      console.log("Annotations:", annotations);
+      // Optionally add annotations to viewer
     }
 
     totalOccurrences += occurrences;
@@ -138,25 +91,23 @@ const searchAndLogOccurrences = async (doc) => {
   }
 
   console.log(`# Total occurrences of "${SEARCH_FOR}": ${totalOccurrences}`);
-};
-
-searchAndLogOccurrences(pdfDocument);
-
-function scrollToPage(pageNumber) {
-  // pdfViewer.scrollPageIntoView({ pageNumber: pageNumber, destArray: [1, { name: "Fit" }] });
-  pdfViewer.scrollPageIntoView({ pageNumber: pageNumber });
 }
 
-const goto1stPageEl = document.getElementById("goto-1st-page");
-goto1stPageEl.addEventListener("click", function () {
-  // pdfViewer.scrollPageIntoView(1);
-  pdfViewer.page = 1;
-  console.log(`pdfViewer.currentPageNumber: ${pdfViewer.currentPageNumber}`);
+function scrollToPage(pageNumber) {
+  pdfViewer.scrollPageIntoView({ pageNumber });
+}
+
+document.getElementById("goto-1st-page").addEventListener("click", () => {
+  // scrollToPage(0);
+  pdfViewer.scrollPageIntoView({pageNumber: 1});
+  console.log(`Current page: ${pdfViewer.currentPageNumber}`);
 });
 
-const goto2ndPageEl = document.getElementById("goto-2nd-page");
-goto2ndPageEl.addEventListener("click", function () {
-  // pdfViewer.scrollPageIntoView(1);
-  pdfViewer.page = 2;
-  console.log(`pdfViewer.currentPageNumber: ${pdfViewer.currentPageNumber}`);
+document.getElementById("goto-2nd-page").addEventListener("click", () => {
+  pdfViewer.scrollPageIntoView({pageNumber: 2});
+  // pdfViewer.page = 2;
+  console.log(`Current page: ${pdfViewer.currentPageNumber}`);
 });
+
+await initializePDFViewer();
+await searchAndLogOccurrences(pdfDocument);
