@@ -13,6 +13,11 @@ gem "tzinfo-data", platforms: [:windows, :jruby]
 gem "bootsnap", require: false
 gem "image_processing", "~> 1.2"
 
+gem "pdf-reader"  # Reading the PDF contents
+gem 'prawn'       # For creating and manipulating PDFs
+gem 'pagy'        # For pagination, if needed for occurrences
+gem 'hexapdf'
+
 group :development do
   gem "web-console"
   gem "letter_opener"

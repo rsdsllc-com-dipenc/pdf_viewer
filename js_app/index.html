@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PDF Text Highlighter</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf.mjs" type="module"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.2.67/pdf_viewer.css" />
+    <script type="module">
+      document.addEventListener("DOMContentLoaded", function () {
+        const url = "1099INT.pdf"; // Replace with the path to your PDF file
+        const container = document.getElementById("pdf-container");
+
+        const loadingTask = pdfjsLib.getDocument(url);
+        console.dir(loadingTask);
+        loadingTask.promise
+          .then(function (pdf) {
+            // Fetch the first page
+            return pdf.getPage(1).then(function (page) {
+              const scale = 1.5;
+              const viewport = page.getViewport({ scale: scale });
+
+              // Prepare canvas using PDF page dimensions
+              const canvas = document.createElement("canvas");
+              const context = canvas.getContext("2d");
+              canvas.height = viewport.height;
+              canvas.width = viewport.width;
+              container.appendChild(canvas);
+
+              // Render PDF page into canvas context
+              const renderContext = {
+                canvasContext: context,
+                viewport: viewport,
+              };
+              return page.render(renderContext).promise;
+            });
+          })
+          .then(function () {
+            // Highlight text logic here
+            const textLayer = document.createElement("div");
+            textLayer.className = "textLayer";
+            container.appendChild(textLayer);
+
+            loadingTask.promise.then(function (pdf) {
+              pdf.getPage(1).then(function (page) {
+                page.getTextContent().then(function (textContent) {
+                  pdfjsLib.renderTextLayer({
+                    textContent: textContent,
+                    container: textLayer,
+                    viewport: page.getViewport({ scale: 1.5 }),
+                    textDivs: [],
+                  });
+
+                  // Highlight the text
+                  highlightText("tax", textLayer);
+                });
+              });
+            });
+          });
+
+        function highlightText(text, textLayer) {
+          console.log("inside highlightText");
+          const spans = textLayer.querySelectorAll("span");
+          console.dir(spans);
+          spans.forEach((span) => {
+            if (span.textContent.includes(text)) {
+              console.log(`found text: ${span.textContent}`);
+              span.style.backgroundColor = "yellow";
+            }
+          });
+
+          // Render translucent rectangle
+          const rect = document.createElement("div");
+          rect.style.position = "absolute";
+          rect.style.top = "10px";
+          rect.style.right = "10px";
+          rect.style.width = "100px";
+          rect.style.height = "100px";
+          rect.style.backgroundColor = "rgba(0, 0, 255, 0.5)";
+          container.appendChild(rect);
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <embed src="https://web-preview.pspdfkit.com/showcases/8.pdf" type="application/pdf" width="100%" height="400" />
+
+    <object data="https://web-preview.pspdfkit.com/showcases/8.pdf" type="application/pdf" width="100%" height="100%" aria-labelledby="PDF document">
+      <p>
+        ƒ Your browser does not support PDFs.
+        <a href="https://web-preview.pspdfkit.com/showcases/8.pdf">Download the PDF</a>
+      </p>
+    </object>
+    <div id="pdf-container" style="position: relative; width: 100%"></div>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+#pdf-viewer {
+  border: 1px solid black;
+  margin: 20px;
+}
+
+#blue-square {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 60px;
+  height: 20px;
+  background-color: blue;
+}
+
+.highlight {
+  background-color: rgba(255, 192, 203, 0.5);
+}

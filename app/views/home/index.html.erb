@@ -1,6 +1,19 @@
+<!-- https://getbootstrap.com/docs/5.3/components/alerts/#live-example -->
+<% flash.each do |key, value| %>
+  <% alert_class = case key
+                   when :notice then "success"
+                   when :alert then "danger"
+                   else key
+                   end %>
+  <%= content_tag :div, class: "alert alert-#{alert_class} alert-dismissible fade show", role: "alert" do %>
+    <%= value %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    
+  <% end %>
+<% end %>
 <h1 class="text-center my-4">Search PDF</h1>
 <div class="container">
-  <%= form_with url: '/result', local: true, multipart: true do |form| %>
+  <%= form_with url: "/create", local: true, multipart: true do |form| %>
     <div class="mb-3">
       <%= form.label :search_text, "Text to search", class: 'form-label' %>
       <%= form.text_field :search_text, class: 'form-control', required: true, placeholder: 'Enter text to search' %>

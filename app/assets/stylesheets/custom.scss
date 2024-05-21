@@ -1,0 +1,27 @@
+.w-30 {
+  width: 30%;
+}
+
+.w-70 {
+  width: 70%;
+}
+
+h1 {
+  font-size: 2rem;
+  color: #343a40;
+}
+
+.lead {
+  font-size: 1.25rem;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  transition: background-color 0.3s, border-color 0.3s;
+
+  &:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+  }
+}
