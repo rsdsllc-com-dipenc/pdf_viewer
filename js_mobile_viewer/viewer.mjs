@@ -5,7 +5,7 @@ if (!pdfjsLib.getDocument || !pdfjsViewer.PDFViewer) {
 const MAX_CANVAS_PIXELS = 0;
 const TEXT_LAYER_MODE = 2;
 const MAX_IMAGE_SIZE = 1024 * 1024;
-const CMAP_URL = "../../node_modules/pdfjs-dist/cmaps/";
+const CMAP_URL = "../node_modules/pdfjs-dist/cmaps/";
 const CMAP_PACKED = true;
 const DEFAULT_URL = "insurance.pdf";
 const DEFAULT_SCALE_DELTA = 1.1;
@@ -13,7 +13,7 @@ const MIN_SCALE = 0.25;
 const MAX_SCALE = 10.0;
 const DEFAULT_SCALE_VALUE = "auto";
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = "../../node_modules/pdfjs-dist/build/pdf.worker.mjs";
+pdfjsLib.GlobalWorkerOptions.workerSrc = "../node_modules/pdfjs-dist/build/pdf.worker.mjs";
 
 let pdfDocument = null;
 let pdfViewer = null;
