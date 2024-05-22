@@ -42,3 +42,9 @@ body {
   box-sizing: border-box; /* Ensures padding is included in the width */
   height: 100%;
 }
+
+span.fb {
+  font-weight: bolder !important;
+  color: red;
+  background: black;
+}

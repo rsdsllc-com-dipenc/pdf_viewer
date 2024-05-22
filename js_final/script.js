@@ -66,6 +66,7 @@ async function searchAndLogOccurrences(doc) {
     let occurrences = 0;
     pageTextContent.items.forEach((item) => {
       if (item.str.includes(SEARCH_FOR)) {
+        item.str = `<i>${item.str}<i>`
         console.log("Found law", item);
         occurrences++;
       }
@@ -93,19 +94,14 @@ async function searchAndLogOccurrences(doc) {
   console.log(`# Total occurrences of "${SEARCH_FOR}": ${totalOccurrences}`);
 }
 
-function scrollToPage(pageNumber) {
-  pdfViewer.scrollPageIntoView({ pageNumber });
-}
 
 document.getElementById("goto-1st-page").addEventListener("click", () => {
-  // scrollToPage(0);
   pdfViewer.scrollPageIntoView({pageNumber: 1});
   console.log(`Current page: ${pdfViewer.currentPageNumber}`);
 });
 
 document.getElementById("goto-2nd-page").addEventListener("click", () => {
   pdfViewer.scrollPageIntoView({pageNumber: 2});
-  // pdfViewer.page = 2;
   console.log(`Current page: ${pdfViewer.currentPageNumber}`);
 });
 
