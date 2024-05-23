@@ -59,14 +59,14 @@ pip install pymupdf
 python3 highlight.py
 ```
 
-# Other Libraries and their prices
-PSPDFKIT - Contact sales
-Apryse - Contact sales
-Pdfjd-express - $440/month (has highlight example)
-pdf-lib.js - no highlight example. Last release 2021
+# Other Libraries
 
-pdf-reader gem - only reads PDFs
-Prawn gem - only writes to PDFs
+- PSPDFKIT - Price: Contact sales
+- Apryse - Price: Contact sales
+- Pdfjd-express - Price: $440/month (has highlight example)
+- pdf-lib.js - no highlight example. Last release 2021
+- pdf-reader gem - only reads PDFs
+- Prawn gem - only writes to PDFs
 
 ## Version
 
