@@ -59,11 +59,11 @@ end
 # Load the PDF
 pdf = HexaPDF::Document.open('simple.pdf')
 
-# Highlight 'vehicle' on the first page
+# Highlight 'This' on the first page
 highlight_words_on_page(pdf, 1, ['This'])
 
 # Highlight 'update' on the second page
 # highlight_words_on_page(pdf, 2, ['update'])
 
 # Save the modified PDF
-pdf.write('highlighted_insurance.pdf', optimize: true)
+pdf.write('highlighted_simple.pdf', optimize: true)
