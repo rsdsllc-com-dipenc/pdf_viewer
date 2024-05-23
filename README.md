@@ -87,4 +87,4 @@ ruby test1.rb
 
 ## References
 - https://github.com/mozilla/pdf.js
-- 
+- https://hexapdf.gettalong.org/
