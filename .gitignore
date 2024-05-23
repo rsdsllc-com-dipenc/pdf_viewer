@@ -40,8 +40,9 @@
 /node_modules
 
 
-# All PDF files
+# All PDF files except simple.pdf
 *.pdf
+!simple.pdf
 
 # Environment
 /py_app/myenv

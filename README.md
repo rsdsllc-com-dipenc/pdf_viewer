@@ -59,6 +59,17 @@ pip install pymupdf
 python3 highlight.py
 ```
 
+## Ruby
+
+There are 2 scripts and they both require simple.pdf
+
+```sh
+cd rb_hexapdf
+gem install hexapdf
+ruby 008-show_char_bboxes.rb simple.pdf
+ruby test1.rb
+```
+
 # Other Libraries
 
 - PSPDFKIT - Price: Contact sales
