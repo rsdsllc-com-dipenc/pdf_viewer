@@ -2,7 +2,7 @@
 
 ![Preview](preview.png)
 
-Although this is a rails project, implementing PDF highlighting in a rails app has been abandon and I have created multiple smaller apps in javascript, ruby and python.
+Although this is a rails project, implementing PDF highlighting in a rails app has been put on hold and I have created multiple smaller apps in javascript, ruby and python as described below until I find the best solution.
 
 # Features
 - Display PDF in a browser with basic controls
